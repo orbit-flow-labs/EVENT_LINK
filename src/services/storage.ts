@@ -1,4 +1,5 @@
 import type { IssuedTicket, UserAccount } from '../types';
+import { API_BASE_URL } from './apiConfig';
 
 const STORAGE_KEY_TICKETS = 'eventlink_issued_tickets_v1';
 const STORAGE_KEY_USER = 'eventlink_user_account_v1';
@@ -28,7 +29,7 @@ export function saveStoredUserAccount(user: UserAccount | null): void {
 export async function fetchUserLiveFromDB(email: string): Promise<UserAccount | null> {
   if (!email) return null;
   try {
-    const res = await fetch(`http://localhost:3001/api/auth/me?email=${encodeURIComponent(email)}`);
+    const res = await fetch(`${API_BASE_URL}/api/auth/me?email=${encodeURIComponent(email)}`);
     if (res.ok) {
       const data = await res.json();
       if (data.user) {

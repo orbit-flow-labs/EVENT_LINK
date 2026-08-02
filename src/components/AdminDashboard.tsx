@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { EventItem, IssuedTicket, TicketTier } from '../types';
 import { OrganizerTerminal } from './OrganizerTerminal';
 import { STELLAR_EXPERT_TESTNET_URL, registerEventOnStellar, SOROBAN_CONTRACT_ID } from '../services/stellar';
+import { API_BASE_URL } from '../services/apiConfig';
 import { PlusCircle, DollarSign, Layers, ExternalLink, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -77,7 +78,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
     // 2. Save to backend database API persistently (MongoDB Atlas)
     try {
-      await fetch('http://localhost:3001/api/events', {
+      await fetch(`${API_BASE_URL}/api/events`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newEvent),

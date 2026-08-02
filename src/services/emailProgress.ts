@@ -1,4 +1,5 @@
 import type { IssuedTicket } from '../types';
+import { API_BASE_URL } from './apiConfig';
 
 export interface ProgressEmailParams {
   stage: 'registration' | 'purchase' | 'claim' | 'checkin';
@@ -10,11 +11,11 @@ export interface ProgressEmailParams {
 }
 
 /**
- * Dispatch Progress Email to backend API endpoint http://localhost:3001/api/tickets/send-progress-email
+  Dispatch Progress Email to backend API endpoint
  */
 export async function triggerProgressEmail(params: ProgressEmailParams): Promise<{ success: boolean; message: string }> {
   try {
-    const res = await fetch('http://localhost:3001/api/tickets/send-progress-email', {
+    const res = await fetch(`${API_BASE_URL}/api/tickets/send-progress-email`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(params),

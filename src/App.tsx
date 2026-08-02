@@ -11,6 +11,7 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { MyTicketsView } from './components/MyTicketsView';
 import { UserAuthModal } from './components/UserAuthModal';
 
+import { API_BASE_URL } from './services/apiConfig';
 import { MOCK_EVENTS } from './data/mockEvents';
 import type { EventItem, TicketTier, IssuedTicket, UserAccount } from './types';
 import { connectFreighterWallet, type WalletConnectionState } from './services/walletConnect';
@@ -59,7 +60,7 @@ export function App() {
     }
 
     // Fetch live events from database API endpoint
-    fetch('http://localhost:3001/api/events')
+    fetch(`${API_BASE_URL}/api/events`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {

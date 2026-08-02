@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { UserAccount } from '../types';
 import { saveStoredUserAccount } from '../services/storage';
 import { triggerProgressEmail } from '../services/emailProgress';
+import { API_BASE_URL } from '../services/apiConfig';
 import { X, User, Mail, Lock, ShieldCheck, Loader2, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -13,9 +14,9 @@ interface UserAuthModalProps {
 
 export const UserAuthModal: React.FC<UserAuthModalProps> = ({ initialMode = 'login', onClose, onAuthSuccess }) => {
   const [isLogin, setIsLogin] = useState<boolean>(initialMode === 'login');
-  const [fullName, setFullName] = useState<string>('Alex Johnson');
-  const [email, setEmail] = useState<string>('alex.attendee@drips.org');
-  const [password, setPassword] = useState<string>('password123');
+  const [fullName, setFullName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,7 +24,7 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ initialMode = 'log
     setIsSubmitting(true);
 
     try {
-      const endpoint = isLogin ? 'http://localhost:3001/api/auth/login' : 'http://localhost:3001/api/auth/register';
+      const endpoint = isLogin ? `${API_BASE_URL}/api/auth/login` : `${API_BASE_URL}/api/auth/register`;
       let res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -40,7 +41,7 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ initialMode = 'log
         userToSave = data.user;
       } else if (!isLogin && res.status === 400) {
         // Retry with login endpoint
-        const loginRes = await fetch('http://localhost:3001/api/auth/login', {
+        const loginRes = await fetch(`${API_BASE_URL}/api/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password, fullName }),
