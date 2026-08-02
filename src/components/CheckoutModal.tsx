@@ -33,8 +33,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
   const [form, setForm] = useState<PaymentFormState>({
     provider,
-    email: storedUser?.email || 'alex.attendee@drips.org',
-    fullName: storedUser?.fullName || 'Alex Johnson',
+    email: storedUser?.email || '',
+    fullName: storedUser?.fullName || '',
     phone: '+234 812 345 6789',
     cardNumber: '4242 •••• •••• 4242',
     cardExpiry: '12/28',

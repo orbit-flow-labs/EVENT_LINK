@@ -1,5 +1,6 @@
 import type { EventItem, TicketTier, PaymentFormState, IssuedTicket } from '../types';
 import { mintStellarTicket, SOROBAN_CONTRACT_ID } from './stellar';
+import { triggerProgressEmail } from './emailProgress';
 
 export interface CheckoutResult {
   success: boolean;
@@ -32,10 +33,13 @@ export async function processPaymentAndMintTicket(
     amountPaidFormatted = `${tier.priceXLM} XLM`;
   }
 
+  const cleanEmail = paymentDetails.email || 'attendee@eventlink.app';
+  const cleanName = paymentDetails.fullName || cleanEmail.split('@')[0].toUpperCase();
+
   // Mint Stellar Ticket asset
   const mintInfo = await mintStellarTicket(
-    paymentDetails.fullName || 'Valued Attendee',
-    paymentDetails.email || 'attendee@eventlink.app',
+    cleanName,
+    cleanEmail,
     event.id,
     tier.name
   );
@@ -48,8 +52,8 @@ export async function processPaymentAndMintTicket(
     eventDate: event.date,
     eventVenue: event.venueName,
     tierName: tier.name,
-    buyerName: paymentDetails.fullName || 'EventLink User',
-    buyerEmail: paymentDetails.email || 'user@example.com',
+    buyerName: cleanName,
+    buyerEmail: cleanEmail,
     paymentProvider: paymentDetails.provider,
     amountPaid: amountPaidFormatted,
     custodialPublicKey: mintInfo.custodialPublicKey,
@@ -63,6 +67,18 @@ export async function processPaymentAndMintTicket(
     isListedResale: false,
     mintTimestamp: mintInfo.mintTimestamp,
   };
+
+  // Dispatch progress email via Nodemailer SMTP Backend
+  try {
+    await triggerProgressEmail({
+      stage: 'purchase',
+      email: cleanEmail,
+      fullName: cleanName,
+      ticket: issuedTicket,
+    });
+  } catch (emailErr) {
+    console.warn('Purchase notification email dispatch warning:', emailErr);
+  }
 
   return {
     success: true,

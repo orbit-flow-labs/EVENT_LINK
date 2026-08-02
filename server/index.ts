@@ -29,7 +29,23 @@ app.use('/api/tickets', ticketsRouter);
 app.use('/api/webhooks', webhooksRouter);
 app.use('/api/events', eventsRouter);
 
-// Health check endpoint
+// Health check and root status endpoints
+app.get('/', (_req, res) => {
+  res.status(200).json({
+    status: 'online',
+    service: 'EventLink Node.js Backend API',
+    timestamp: new Date().toISOString(),
+    stellarNetwork: 'Stellar Testnet',
+    endpoints: {
+      health: 'GET /api/health',
+      auth: 'POST /api/auth/register, POST /api/auth/login, GET /api/auth/me',
+      tickets: 'POST /api/tickets/purchase, POST /api/tickets/claim',
+      webhooks: 'POST /api/webhooks/stripe, POST /api/webhooks/flutterwave',
+      events: 'GET /api/events, POST /api/events',
+    }
+  });
+});
+
 app.get('/api/health', (_req, res) => {
   res.json({
     status: 'healthy',
