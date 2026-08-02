@@ -1,0 +1,202 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --bg-dark: #040711;
+  --bg-card: rgba(12, 18, 34, 0.75);
+  --bg-card-hover: rgba(22, 32, 58, 0.85);
+  --border-glass: rgba(255, 255, 255, 0.1);
+  --border-neon-cyan: rgba(0, 242, 254, 0.4);
+  --border-neon-purple: rgba(112, 0, 255, 0.4);
+  --cyan-primary: #00f2fe;
+  --purple-accent: #7000ff;
+  --magenta-accent: #ec4899;
+  --emerald-success: #10b981;
+  --amber-warning: #f59e0b;
+  --gold-accent: #ffd700;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-dark);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(112, 0, 255, 0.22) 0px, transparent 55%),
+    radial-gradient(at 100% 0%, rgba(0, 242, 254, 0.2) 0px, transparent 55%),
+    radial-gradient(at 50% 100%, rgba(236, 72, 153, 0.15) 0px, transparent 55%);
+  background-attachment: fixed;
+  color: var(--text-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Glassmorphism Panel */
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
+  border-radius: 20px;
+  box-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.6);
+}
+
+.glass-panel-hover {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-panel-hover:hover {
+  transform: translateY(-6px) scale(1.01);
+  border-color: var(--border-neon-cyan);
+  box-shadow: 0 20px 45px -5px rgba(0, 242, 254, 0.25);
+}
+
+/* Holographic Metallic Card Effect */
+.holographic-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(12, 18, 34, 0.95), rgba(30, 41, 59, 0.95));
+  border: 1px solid rgba(0, 242, 254, 0.35);
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.holographic-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(0, 242, 254, 0.08) 30%,
+    rgba(112, 0, 255, 0.12) 50%,
+    rgba(236, 72, 153, 0.08) 70%,
+    transparent 100%
+  );
+  transform: rotate(25deg);
+  animation: holographicShine 6s infinite linear;
+  pointer-events: none;
+}
+
+@keyframes holographicShine {
+  0% {
+    transform: translateY(-100%) rotate(25deg);
+  }
+  100% {
+    transform: translateY(100%) rotate(25deg);
+  }
+}
+
+/* Gradient Text Utilities */
+.gradient-text-cyan {
+  background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-purple {
+  background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-gold {
+  background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Cyber Button Styles */
+.btn-primary {
+  background: linear-gradient(135deg, var(--cyan-primary) 0%, #00a8ff 100%);
+  color: #040711;
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  padding: 10px 22px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 20px rgba(0, 242, 254, 0.35);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 242, 254, 0.55);
+  filter: brightness(1.1);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-glass);
+  color: var(--text-main);
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Animated Scanner Laser */
+.scan-laser-line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #00f2fe, #10b981, transparent);
+  box-shadow: 0 0 15px #00f2fe, 0 0 5px #10b981;
+  animation: laserScan 2.2s infinite ease-in-out;
+}
+
+@keyframes laserScan {
+  0% {
+    top: 2%;
+    opacity: 0.2;
+  }
+  50% {
+    top: 96%;
+    opacity: 1;
+  }
+  100% {
+    top: 2%;
+    opacity: 0.2;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cyan-primary);
+}
