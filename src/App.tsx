@@ -15,7 +15,7 @@ import { API_BASE_URL } from './services/apiConfig';
 import { MOCK_EVENTS } from './data/mockEvents';
 import type { EventItem, TicketTier, IssuedTicket, UserAccount } from './types';
 import { connectFreighterWallet, type WalletConnectionState } from './services/walletConnect';
-import { getStoredTickets, addIssuedTicket, updateTicketInStorage, getStoredUserAccount, saveStoredUserAccount } from './services/storage';
+import { getStoredTickets, addIssuedTicket, updateTicketInStorage, getStoredUserAccount, saveStoredUserAccount, fetchTicketsLiveFromDB } from './services/storage';
 
 export function App() {
   const [activeTab, setActiveTab] = useState<'events' | 'my-tickets' | 'admin'>('events');
@@ -53,6 +53,13 @@ export function App() {
   useEffect(() => {
     const loaded = getStoredTickets();
     setTickets(loaded);
+
+    // Sync live tickets persistently from MongoDB Atlas backend
+    fetchTicketsLiveFromDB().then((liveTickets) => {
+      if (liveTickets && liveTickets.length > 0) {
+        setTickets(liveTickets);
+      }
+    });
 
     const savedUser = getStoredUserAccount();
     if (savedUser) {
@@ -262,6 +269,11 @@ export function App() {
           onAuthSuccess={(user) => {
             setUserAccount(user);
             setIsAuthModalOpen(false);
+            fetchTicketsLiveFromDB().then((liveTickets) => {
+              if (liveTickets && liveTickets.length > 0) {
+                setTickets(liveTickets);
+              }
+            });
           }}
         />
       )}

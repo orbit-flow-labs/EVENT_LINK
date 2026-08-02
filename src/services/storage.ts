@@ -77,3 +77,25 @@ export function updateTicketInStorage(updatedTicket: IssuedTicket): IssuedTicket
   saveTickets(updated);
   return updated;
 }
+
+export async function fetchTicketsLiveFromDB(): Promise<IssuedTicket[]> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/tickets`);
+    if (res.ok) {
+      const liveTickets = await res.json();
+      if (Array.isArray(liveTickets) && liveTickets.length > 0) {
+        const localTickets = getStoredTickets();
+        const map = new Map<string, IssuedTicket>();
+        [...liveTickets, ...localTickets].forEach((t) => {
+          if (t && t.id) map.set(t.id, t);
+        });
+        const merged = Array.from(map.values());
+        saveTickets(merged);
+        return merged;
+      }
+    }
+  } catch (err) {
+    console.warn('Live DB tickets fetch notice:', err);
+  }
+  return getStoredTickets();
+}
