@@ -32,6 +32,25 @@ app.use((_req, res, next) => {
   next();
 });
 
+// Health check and root status endpoint (for Render / Uptime checks)
+app.get('/', (_req: Request, res: Response) => {
+  res.status(200).json({
+    status: 'online',
+    service: 'EventLink Webhook & Stellar Minting Backend',
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      health: 'GET /api/health',
+      stripeWebhook: 'POST /api/webhooks/stripe',
+      flutterwaveWebhook: 'POST /api/webhooks/flutterwave',
+      logs: 'GET /api/webhooks/logs',
+    }
+  });
+});
+
+app.get('/api/health', (_req: Request, res: Response) => {
+  res.status(200).json({ status: 'OK', service: 'EventLink Backend', timestamp: new Date().toISOString() });
+});
+
 /**
  * Verify Stripe Signature (HMAC SHA-256)
  */
