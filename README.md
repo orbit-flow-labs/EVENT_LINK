@@ -19,6 +19,7 @@ Upon purchase, the system automatically mints a non-custodial digital ticket ass
 
 ## ⚡ Live Deployed Infrastructure & Smart Contracts
 
+- **Deployed EventLink Project**: https://event-link-soroban.vercel.app/
 - **Blockchain Network**: Stellar Testnet
 - **Deployed Soroban Smart Contract ID**: [`CDD3VJENDGV6LLOY2OCYQSRD5CQKYAPL4I3MNWFFQBXJ6P6KOJHQK47J`](https://stellar.expert/explorer/testnet/contract/CDD3VJENDGV6LLOY2OCYQSRD5CQKYAPL4I3MNWFFQBXJ6P6KOJHQK47J)
 - **StellarExpert Explorer**: [View Live Contract Details](https://stellar.expert/explorer/testnet/contract/CDD3VJENDGV6LLOY2OCYQSRD5CQKYAPL4I3MNWFFQBXJ6P6KOJHQK47J)
