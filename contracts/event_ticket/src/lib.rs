@@ -61,6 +61,19 @@ impl EventTicketContract {
     ) {
         organizer.require_auth();
 
+        if env.storage().instance().has(&DataKey::EventInfo) {
+            panic!("Contract is already initialized");
+        }
+        if name.len() == 0 {
+            panic!("Event name cannot be empty");
+        }
+        if total_supply == 0 {
+            panic!("Event supply must be greater than zero");
+        }
+        if royalty_bps > 10_000 {
+            panic!("Royalty rate cannot exceed 100 percent");
+        }
+
         let event_info = EventMeta {
             event_id: 101,
             organizer,
