@@ -87,7 +87,9 @@ sequenceDiagram
 
 ## 🗄️ Database Schema (MongoDB / Mongoose)
 
-### `Ticket` Schema (`server/models/Ticket.ts`)
+### Backend Ticket Schema
+
+See the ticket schema in [EVENT_LINK_BACKEND-](https://github.com/orbit-flow-labs/EVENT_LINK_BACKEND-).
 
 ```typescript
 interface ITicket {
@@ -130,7 +132,9 @@ To ensure gate safety even during internet outages, EventLink utilizes a dual-mo
 
 ---
 
-## 📜 Soroban Smart Contract Functions (`contracts/event_ticket`)
+## 📜 Soroban Smart Contract Functions
+
+The Soroban source and contract CI are maintained in [EVENT_LINK_CONTRACT](https://github.com/orbit-flow-labs/EVENT_LINK_CONTRACT).
 
 The Rust Soroban contract exposes the following core entry points:
 

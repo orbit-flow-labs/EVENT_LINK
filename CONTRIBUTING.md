@@ -34,9 +34,6 @@ There are many ways to contribute to EventLink:
 ### Prerequisites
 - **Node.js**: v18.x or higher
 - **npm** or **yarn**
-- **Rust & Cargo**: Required if modifying Soroban smart contracts (`contracts/event_ticket`)
-- **Stellar CLI**: Required for smart contract compilation and network deployment
-- **MongoDB**: Local database or free MongoDB Atlas cluster
 
 ### Step-by-Step Environment Setup
 
@@ -51,26 +48,18 @@ There are many ways to contribute to EventLink:
    npm install
    ```
 
-3. **Configure Environment File:**
+3. **Configure the Frontend API URL:**
    ```bash
    cp .env.example .env
    ```
-   Fill in mandatory values in `.env` (MongoDB connection URI, Stellar network settings, JWT secret key).
+   Set `VITE_API_BASE_URL` if the backend is not running at its local default. Backend settings are documented in [EVENT_LINK_BACKEND-](https://github.com/orbit-flow-labs/EVENT_LINK_BACKEND-).
 
-4. **Run Server & Frontend in Development Mode:**
+4. **Run the Frontend:**
    ```bash
-   # Terminal 1: Run Backend API
-   npx tsx server/index.ts
-
-   # Terminal 2: Run Frontend App
    npm run dev
    ```
 
-5. **Build Soroban Contracts (Optional):**
-   ```bash
-   cd contracts/event_ticket
-   cargo build --target daemon-unknown-unknown --release
-   ```
+The backend and Soroban contract are maintained separately in [EVENT_LINK_BACKEND-](https://github.com/orbit-flow-labs/EVENT_LINK_BACKEND-) and [EVENT_LINK_CONTRACT](https://github.com/orbit-flow-labs/EVENT_LINK_CONTRACT).
 
 ---
 
@@ -107,8 +96,8 @@ To maintain high code quality and security, please follow this PR workflow:
 
 EventLink is designed to be extensible for event production companies, ticketing agencies, and Web3 protocols:
 
-- **Custom Gateway Integration:** Extend backend controllers in `server/index.ts` to add regional payment provider support (e.g., Paystack, Razorpay).
-- **Custom Soroban Contracts:** Deploy modified versions of `contracts/event_ticket` to support soulbound passes, dynamic ticket tiers, or specialized royalty distribution.
+- **Custom Gateway Integration:** Extend backend routes in [EVENT_LINK_BACKEND-](https://github.com/orbit-flow-labs/EVENT_LINK_BACKEND-) to add regional payment provider support (e.g., Paystack, Razorpay).
+- **Custom Soroban Contracts:** Modify [EVENT_LINK_CONTRACT](https://github.com/orbit-flow-labs/EVENT_LINK_CONTRACT) to support soulbound passes, dynamic ticket tiers, or specialized royalty distribution.
 - **Enterprise Inquiries:** Reach out via GitHub Discussions or open an issue to explore custom enterprise deployments.
 
 ---
