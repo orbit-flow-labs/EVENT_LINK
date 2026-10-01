@@ -85,6 +85,15 @@ impl EventTicketContract {
 
         env.storage().instance().set(&DataKey::EventInfo, &event_info);
         env.storage().instance().set(&DataKey::TicketCounter, &0u64);
+        env.events().publish(
+            (symbol_short!("init"), event_info.event_id),
+            (
+                event_info.organizer.clone(),
+                event_info.name.clone(),
+                event_info.total_supply,
+                event_info.royalty_bps,
+            ),
+        );
     }
 
     /// Issue a new unique ticket digital asset / claimable balance
@@ -136,6 +145,11 @@ impl EventTicketContract {
             env.storage().persistent().set(&DataKey::ClaimLink(claim_secret_hash), &counter);
         }
 
+        env.events().publish(
+            (symbol_short!("mint"), meta.event_id),
+            (counter, ticket.current_owner.clone(), ticket.tier_name.clone(), price),
+        );
+
         counter
     }
 
@@ -165,6 +179,10 @@ impl EventTicketContract {
 
         env.storage().persistent().set(&DataKey::Ticket(ticket_id), &ticket);
         env.storage().persistent().remove(&DataKey::ClaimLink(claim_secret_hash));
+        env.events().publish(
+            (symbol_short!("claim"), ticket.event_id),
+            (ticket_id, ticket.current_owner.clone()),
+        );
 
         true
     }
@@ -197,6 +215,10 @@ impl EventTicketContract {
         ticket.redeem_timestamp = env.ledger().timestamp();
 
         env.storage().persistent().set(&DataKey::Ticket(ticket_id), &ticket);
+        env.events().publish(
+            (symbol_short!("checkin"), ticket.event_id),
+            (ticket_id, ticket.redeem_timestamp),
+        );
 
         TicketStatus::ProofNFT
     }
@@ -240,6 +262,10 @@ impl EventTicketContract {
         ticket.resale_price = resale_price;
 
         env.storage().persistent().set(&DataKey::Ticket(ticket_id), &ticket);
+        env.events().publish(
+            (symbol_short!("listing"), ticket.event_id),
+            (ticket_id, seller, resale_price),
+        );
     }
 
     /// Buy resale ticket with automatic royalty payment to organizer
@@ -265,11 +291,16 @@ impl EventTicketContract {
         let royalty = (ticket.resale_price * meta.royalty_bps as i128) / 10000;
         let seller_payout = ticket.resale_price - royalty;
 
-        ticket.current_owner = buyer;
+        let previous_owner = ticket.current_owner.clone();
+        ticket.current_owner = buyer.clone();
         ticket.is_listed_resale = false;
         ticket.resale_price = 0;
 
         env.storage().persistent().set(&DataKey::Ticket(ticket_id), &ticket);
+        env.events().publish(
+            (symbol_short!("resale"), ticket.event_id),
+            (ticket_id, previous_owner, buyer, royalty, seller_payout),
+        );
     }
 
     /// Fetch ticket details
