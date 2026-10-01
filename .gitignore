@@ -25,8 +25,6 @@ target/
 .soroban/
 
 # Editor directories and system files
-.vscode/*
-!.vscode/extensions.json
 .idea
 .DS_Store
 *.suo
@@ -34,3 +32,7 @@ target/
 *.njsproj
 *.sln
 *.sw?
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
