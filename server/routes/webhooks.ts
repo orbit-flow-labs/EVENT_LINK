@@ -31,7 +31,7 @@ function verifyStripeSignature(rawBody: string, signatureHeader: string | undefi
     const computedSig = hmac.update(signedPayload).digest('hex');
 
     return crypto.timingSafeEqual(Buffer.from(computedSig), Buffer.from(expectedSig));
-  } catch (error) {
+  } catch {
     return false;
   }
 }

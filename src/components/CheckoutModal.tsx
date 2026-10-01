@@ -23,8 +23,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   onClose,
   onSuccess,
 }) => {
-  if (!event || !tier) return null;
-
   const storedUser = propUserAccount || getStoredUserAccount();
 
   const [provider, setProvider] = useState<PaymentProvider>(
@@ -57,6 +55,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [stepText, setStepText] = useState<string>('');
   const [showFlwOverlay, setShowFlwOverlay] = useState<boolean>(false);
+
+  if (!event || !tier) return null;
 
   const getAmountText = () => {
     if (provider === 'stripe') return `$${tier.priceUSD.toFixed(2)} USD`;

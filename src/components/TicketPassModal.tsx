@@ -19,12 +19,10 @@ export const TicketPassModal: React.FC<TicketPassModalProps> = ({
   onOpenClaimModal,
   onToggleResale,
 }) => {
-  if (!ticket) return null;
-
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    if (canvasRef.current) {
+    if (ticket && canvasRef.current) {
       QRCode.toCanvas(
         canvasRef.current,
         JSON.stringify({
@@ -46,6 +44,8 @@ export const TicketPassModal: React.FC<TicketPassModalProps> = ({
       );
     }
   }, [ticket]);
+
+  if (!ticket) return null;
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);

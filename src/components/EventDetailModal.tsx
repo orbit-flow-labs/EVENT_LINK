@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { EventItem, TicketTier } from '../types';
 import { X, Calendar, MapPin, CheckCircle2, ShieldCheck, CreditCard } from 'lucide-react';
 
@@ -15,9 +15,14 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
   onClose,
   onProceedToCheckout,
 }) => {
+  const [selectedTierId, setSelectedTierId] = useState<string>(event?.tiers[0]?.id || '');
+
+  useEffect(() => {
+    setSelectedTierId(event?.tiers[0]?.id || '');
+  }, [event?.id, event?.tiers]);
+
   if (!event) return null;
 
-  const [selectedTierId, setSelectedTierId] = useState<string>(event.tiers[0]?.id || '');
   const selectedTier = event.tiers.find((t) => t.id === selectedTierId) || event.tiers[0];
 
   const getDisplayPrice = (tier: TicketTier) => {
