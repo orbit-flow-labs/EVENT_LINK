@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { EventItem, TicketTier } from '../types';
 import { X, Calendar, MapPin, CheckCircle2, ShieldCheck, CreditCard } from 'lucide-react';
+import { EventImage } from './EventImage';
+import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 
 interface EventDetailModalProps {
   event: EventItem | null;
@@ -15,9 +17,15 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
   onClose,
   onProceedToCheckout,
 }) => {
+  const dialogRef = useAccessibleDialog<HTMLDivElement>(onClose, Boolean(event));
+  const [selectedTierId, setSelectedTierId] = useState<string>(event?.tiers[0]?.id || '');
+
+  useEffect(() => {
+    setSelectedTierId(event?.tiers[0]?.id || '');
+  }, [event?.id, event?.tiers]);
+
   if (!event) return null;
 
-  const [selectedTierId, setSelectedTierId] = useState<string>(event.tiers[0]?.id || '');
   const selectedTier = event.tiers.find((t) => t.id === selectedTierId) || event.tiers[0];
 
   const getDisplayPrice = (tier: TicketTier) => {
@@ -41,7 +49,12 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
       }}
     >
       <div
+        ref={dialogRef}
         className="glass-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Event details for ${event.title}`}
+        tabIndex={-1}
         style={{
           width: '100%',
           maxWidth: '850px',
@@ -77,10 +90,10 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
 
         {/* Event Header Hero */}
         <div style={{ position: 'relative', height: '240px', width: '100%' }}>
-          <img
+          <EventImage
             src={event.imageUrl}
             alt={event.title}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            style={{ width: '100%', height: '100%' }}
           />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 20%, rgba(15, 23, 42, 1) 100%)' }} />
 

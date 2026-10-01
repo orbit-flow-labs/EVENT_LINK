@@ -61,6 +61,19 @@ impl EventTicketContract {
     ) {
         organizer.require_auth();
 
+        if env.storage().instance().has(&DataKey::EventInfo) {
+            panic!("Contract is already initialized");
+        }
+        if name.len() == 0 {
+            panic!("Event name cannot be empty");
+        }
+        if total_supply == 0 {
+            panic!("Event supply must be greater than zero");
+        }
+        if royalty_bps > 10_000 {
+            panic!("Royalty rate cannot exceed 100 percent");
+        }
+
         let event_info = EventMeta {
             event_id: 101,
             organizer,
@@ -72,6 +85,15 @@ impl EventTicketContract {
 
         env.storage().instance().set(&DataKey::EventInfo, &event_info);
         env.storage().instance().set(&DataKey::TicketCounter, &0u64);
+        env.events().publish(
+            (symbol_short!("init"), event_info.event_id),
+            (
+                event_info.organizer.clone(),
+                event_info.name.clone(),
+                event_info.total_supply,
+                event_info.royalty_bps,
+            ),
+        );
     }
 
     /// Issue a new unique ticket digital asset / claimable balance
@@ -83,6 +105,9 @@ impl EventTicketContract {
         claim_secret_hash: String,
     ) -> u64 {
         let mut meta: EventMeta = env.storage().instance().get(&DataKey::EventInfo).unwrap();
+        if price <= 0 {
+            panic!("Ticket price must be greater than zero");
+        }
         if meta.minted_count >= meta.total_supply {
             panic!("Event sold out");
         }
@@ -120,6 +145,11 @@ impl EventTicketContract {
             env.storage().persistent().set(&DataKey::ClaimLink(claim_secret_hash), &counter);
         }
 
+        env.events().publish(
+            (symbol_short!("mint"), meta.event_id),
+            (counter, ticket.current_owner.clone(), ticket.tier_name.clone(), price),
+        );
+
         counter
     }
 
@@ -149,6 +179,10 @@ impl EventTicketContract {
 
         env.storage().persistent().set(&DataKey::Ticket(ticket_id), &ticket);
         env.storage().persistent().remove(&DataKey::ClaimLink(claim_secret_hash));
+        env.events().publish(
+            (symbol_short!("claim"), ticket.event_id),
+            (ticket_id, ticket.current_owner.clone()),
+        );
 
         true
     }
@@ -181,6 +215,10 @@ impl EventTicketContract {
         ticket.redeem_timestamp = env.ledger().timestamp();
 
         env.storage().persistent().set(&DataKey::Ticket(ticket_id), &ticket);
+        env.events().publish(
+            (symbol_short!("checkin"), ticket.event_id),
+            (ticket_id, ticket.redeem_timestamp),
+        );
 
         TicketStatus::ProofNFT
     }
@@ -202,9 +240,20 @@ impl EventTicketContract {
         if ticket.status != TicketStatus::Valid {
             panic!("Only valid tickets can be listed for resale");
         }
+        if ticket.is_listed_resale {
+            panic!("Ticket is already listed for resale");
+        }
 
-        // Anti-scalping cap: Max 150% of original price
-        let max_resale = ticket.price * 150 / 100;
+        if ticket.price <= 0 || resale_price <= 0 {
+            panic!("Ticket and resale prices must be greater than zero");
+        }
+
+        // Anti-scalping cap: Max 150% of original price.
+        let max_resale = ticket
+            .price
+            .checked_mul(150)
+            .map(|price| price / 100)
+            .unwrap_or(i128::MAX);
         if resale_price > max_resale {
             panic!("Resale price exceeds anti-scalping price cap (150%)");
         }
@@ -213,6 +262,10 @@ impl EventTicketContract {
         ticket.resale_price = resale_price;
 
         env.storage().persistent().set(&DataKey::Ticket(ticket_id), &ticket);
+        env.events().publish(
+            (symbol_short!("listing"), ticket.event_id),
+            (ticket_id, seller, resale_price),
+        );
     }
 
     /// Buy resale ticket with automatic royalty payment to organizer
@@ -228,6 +281,9 @@ impl EventTicketContract {
         if !ticket.is_listed_resale {
             panic!("Ticket is not listed for resale");
         }
+        if ticket.current_owner == buyer {
+            panic!("Ticket owner cannot purchase their own listing");
+        }
 
         let meta: EventMeta = env.storage().instance().get(&DataKey::EventInfo).unwrap();
 
@@ -235,11 +291,16 @@ impl EventTicketContract {
         let royalty = (ticket.resale_price * meta.royalty_bps as i128) / 10000;
         let seller_payout = ticket.resale_price - royalty;
 
-        ticket.current_owner = buyer;
+        let previous_owner = ticket.current_owner.clone();
+        ticket.current_owner = buyer.clone();
         ticket.is_listed_resale = false;
         ticket.resale_price = 0;
 
         env.storage().persistent().set(&DataKey::Ticket(ticket_id), &ticket);
+        env.events().publish(
+            (symbol_short!("resale"), ticket.event_id),
+            (ticket_id, previous_owner, buyer, royalty, seller_payout),
+        );
     }
 
     /// Fetch ticket details

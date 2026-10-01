@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { EventItem, TicketTier } from '../types';
 import { X, Smartphone, CreditCard, Landmark, CheckCircle2, ShieldCheck, Copy, ArrowRight, Loader2 } from 'lucide-react';
+import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 
 interface FlutterwaveModalOverlayProps {
   event: EventItem;
@@ -21,6 +22,7 @@ export const FlutterwaveModalOverlay: React.FC<FlutterwaveModalOverlayProps> = (
   onClose,
   onPaymentSuccess,
 }) => {
+  const dialogRef = useAccessibleDialog<HTMLDivElement>(onClose);
   const [activeTab, setActiveTab] = useState<'transfer' | 'ussd' | 'card'>('transfer');
   const [copied, setCopied] = useState<boolean>(false);
   const [isAuthorizing, setIsAuthorizing] = useState<boolean>(false);
@@ -58,6 +60,7 @@ export const FlutterwaveModalOverlay: React.FC<FlutterwaveModalOverlayProps> = (
       }}
     >
       <div
+        ref={dialogRef}
         style={{
           width: '100%',
           maxWidth: '500px',
@@ -68,6 +71,10 @@ export const FlutterwaveModalOverlay: React.FC<FlutterwaveModalOverlayProps> = (
           overflow: 'hidden',
           position: 'relative',
         }}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Flutterwave checkout"
+        tabIndex={-1}
       >
         {/* Top Flutterwave Header */}
         <div

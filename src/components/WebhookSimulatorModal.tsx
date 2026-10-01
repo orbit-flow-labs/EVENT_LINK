@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { IssuedTicket } from '../types';
 import { simulateWebhookDispatch, type WebhookLogEntry } from '../services/webhookService';
 import { X, Zap, Mail, RefreshCw, CheckCircle2, AlertTriangle, Terminal, Code } from 'lucide-react';
+import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 
 interface WebhookSimulatorModalProps {
   onClose: () => void;
@@ -9,6 +10,7 @@ interface WebhookSimulatorModalProps {
 }
 
 export const WebhookSimulatorModal: React.FC<WebhookSimulatorModalProps> = ({ onClose, onTicketMinted }) => {
+  const dialogRef = useAccessibleDialog<HTMLDivElement>(onClose);
   const [provider, setProvider] = useState<'stripe' | 'flutterwave'>('stripe');
   const [buyerName, setBuyerName] = useState<string>('Sarah Web3');
   const [buyerEmail, setBuyerEmail] = useState<string>('sarah@eventlink.app');
@@ -60,7 +62,12 @@ export const WebhookSimulatorModal: React.FC<WebhookSimulatorModalProps> = ({ on
       }}
     >
       <div
+        ref={dialogRef}
         className="glass-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Webhook simulator"
+        tabIndex={-1}
         style={{
           width: '100%',
           maxWidth: '900px',

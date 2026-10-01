@@ -61,6 +61,33 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   box-shadow: 0 20px 45px -5px rgba(0, 242, 254, 0.25);
 }
 
+.event-image-frame {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #17252d, #243238);
+}
+
+.event-image-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #d1e0e0;
+  background: linear-gradient(135deg, #17252d, #243238);
+  font-size: 13px;
+}
+
+.event-image-media {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 /* Holographic Metallic Card Effect */
 .holographic-card {
   position: relative;
@@ -199,4 +226,108 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--cyan-primary);
+}
+
+:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --text-muted: #cbd5e1;
+    --border-glass: rgba(255, 255, 255, 0.45);
+    --border-neon-cyan: rgba(0, 242, 254, 0.85);
+  }
+
+  .gradient-text-cyan,
+  .gradient-text-purple,
+  .gradient-text-gold {
+    background: none;
+    -webkit-text-fill-color: currentColor;
+  }
+
+  .gradient-text-cyan { color: #a5f3fc; }
+  .gradient-text-purple { color: #f5d0fe; }
+  .gradient-text-gold { color: #fde68a; }
+}
+
+@media (max-width: 600px) {
+  .checkout-dialog {
+    max-height: calc(100dvh - 24px);
+    overflow-y: auto;
+    padding: 20px !important;
+    border-radius: 16px !important;
+  }
+
+  .checkout-payment-options {
+    grid-template-columns: 1fr !important;
+  }
+
+  .checkout-card-inputs {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 80px;
+  }
+
+  .checkout-dialog button,
+  .organizer-terminal button {
+    min-height: 44px;
+  }
+
+  .organizer-terminal {
+    padding: 24px 14px !important;
+  }
+
+  .scanner-heading {
+    font-size: 24px !important;
+    overflow-wrap: anywhere;
+  }
+
+  .scanner-stats {
+    flex-wrap: wrap;
+    padding: 10px 12px !important;
+  }
+
+  .scanner-offline-sync {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px !important;
+  }
+
+  .scanner-offline-sync > div {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .scanner-card {
+    padding: 20px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .scanner-form {
+    flex-direction: column;
+  }
+
+  .scanner-form > div,
+  .scanner-form input,
+  .scanner-form button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .scanner-form button {
+    min-height: 48px;
+    justify-content: center;
+  }
 }

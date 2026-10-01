@@ -34,64 +34,98 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [priceUSD, setPriceUSD] = useState<number>(30);
   const [priceNGN, setPriceNGN] = useState<number>(45000);
   const [priceXLM, setPriceXLM] = useState<number>(200);
+  const [isCreatingEvent, setIsCreatingEvent] = useState(false);
+  const [isRetryingEventSave, setIsRetryingEventSave] = useState(false);
+  const [eventCreationError, setEventCreationError] = useState('');
+  const [pendingEventSave, setPendingEventSave] = useState<EventItem | null>(null);
+
+  const saveEventToBackend = async (event: EventItem) => {
+    const response = await fetch(`${API_BASE_URL}/api/events`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(event),
+    });
+    if (!response.ok) throw new Error('Event was registered, but the database rejected the save.');
+  };
 
   const handleCreateEventSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || !tagline) {
-      alert('Title and tagline are required.');
+    if (!title.trim() || !tagline.trim()) {
+      setEventCreationError('Event title and tagline are required.');
       return;
     }
+    if (isCreatingEvent || pendingEventSave) return;
+    setEventCreationError('');
+    setIsCreatingEvent(true);
 
-    const newTier: TicketTier = {
-      id: `tier-${Math.floor(100 + Math.random() * 900)}`,
-      name: 'General Admission',
-      priceUSD,
-      priceNGN,
-      priceXLM,
-      perks: ['Full Event Entry', 'Digital Soroban Asset Pass', 'On-Chain POAP NFT'],
-      totalAvailable: 500,
-      remaining: 500,
-    };
-
-    const eventId = `evt-${Math.floor(100 + Math.random() * 900)}`;
-
-    // 1. Submit live on-chain registration transaction to Stellar Testnet Horizon
-    const onChainRes = await registerEventOnStellar(title, eventId);
-
-    const newEvent: EventItem = {
-      id: eventId,
-      title,
-      tagline,
-      category,
-      date,
-      time,
-      location,
-      venueName,
-      imageUrl,
-      organizerName,
-      organizerStellarAddress: 'GCSOROBANEVENTORGANIZERSTELLARKEY2026',
-      royaltyPercentage: 5,
-      tiers: [newTier],
-      stellarTxHash: onChainRes.stellarTxHash,
-      sorobanContractId: SOROBAN_CONTRACT_ID,
-    };
-
-    // 2. Save to backend database API persistently (MongoDB Atlas)
     try {
-      await fetch(`${API_BASE_URL}/api/events`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newEvent),
-      });
-    } catch (err) {
-      console.warn('Backend event save warning:', err);
-    }
+      const newTier: TicketTier = {
+        id: `tier-${Math.floor(100 + Math.random() * 900)}`,
+        name: 'General Admission',
+        priceUSD,
+        priceNGN,
+        priceXLM,
+        perks: ['Full Event Entry', 'Digital Soroban Asset Pass', 'On-Chain POAP NFT'],
+        totalAvailable: 500,
+        remaining: 500,
+      };
 
-    onAddEvent(newEvent);
-    alert(`🎉 Event "${title}" created!\n\n✅ Saved to MongoDB Atlas Database\n⚡ Registered On-Chain on Stellar Testnet!\n\nTx Hash: ${onChainRes.stellarTxHash}`);
-    setTitle('');
-    setTagline('');
-    setAdminTab('payments');
+      const eventId = `evt-${Math.floor(100 + Math.random() * 900)}`;
+
+      const onChainRes = await registerEventOnStellar(title.trim(), eventId);
+
+      const newEvent: EventItem = {
+        id: eventId,
+        title: title.trim(),
+        tagline: tagline.trim(),
+        category,
+        date,
+        time,
+        location,
+        venueName,
+        imageUrl,
+        organizerName,
+        organizerStellarAddress: 'GCSOROBANEVENTORGANIZERSTELLARKEY2026',
+        royaltyPercentage: 5,
+        tiers: [newTier],
+        stellarTxHash: onChainRes.stellarTxHash,
+        sorobanContractId: SOROBAN_CONTRACT_ID,
+      };
+
+      onAddEvent(newEvent);
+      try {
+        await saveEventToBackend(newEvent);
+      } catch (error) {
+        setPendingEventSave(newEvent);
+        throw error;
+      }
+
+      alert(`Event "${title.trim()}" created and saved.\n\nTx Hash: ${onChainRes.stellarTxHash}`);
+      setTitle('');
+      setTagline('');
+      setAdminTab('payments');
+    } catch (err) {
+      setEventCreationError(err instanceof Error ? err.message : 'Event creation failed. Please retry.');
+    } finally {
+      setIsCreatingEvent(false);
+    }
+  };
+
+  const handleRetryEventSave = async () => {
+    if (!pendingEventSave || isRetryingEventSave) return;
+    setEventCreationError('');
+    setIsRetryingEventSave(true);
+    try {
+      await saveEventToBackend(pendingEventSave);
+      setPendingEventSave(null);
+      setTitle('');
+      setTagline('');
+      setAdminTab('payments');
+    } catch (error) {
+      setEventCreationError(error instanceof Error ? error.message : 'Database save failed. Please retry.');
+    } finally {
+      setIsRetryingEventSave(false);
+    }
   };
 
   // Financial Statistics Calculation
@@ -277,6 +311,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             Publish New Event to Stellar Registry
           </h2>
 
+          {isCreatingEvent && <p role="status" aria-live="polite" style={{ marginBottom: '16px', color: 'var(--text-muted)' }}>Registering event and saving details...</p>}
+          {eventCreationError && <p role="alert" style={{ marginBottom: '16px', color: '#fca5a5' }}>{eventCreationError}</p>}
+          {pendingEventSave && (
+            <button type="button" className="btn-secondary" onClick={handleRetryEventSave} disabled={isRetryingEventSave}>
+              {isRetryingEventSave ? 'Retrying database save...' : `Retry database save for ${pendingEventSave.title}`}
+            </button>
+          )}
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div>
               <label style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Event Title</label>
@@ -360,9 +402,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
             </div>
 
-            <button type="submit" className="btn-primary" style={{ justifyContent: 'center', padding: '14px', fontSize: '16px', marginTop: '8px' }}>
+            <button type="submit" disabled={isCreatingEvent || isRetryingEventSave || Boolean(pendingEventSave)} className="btn-primary" style={{ justifyContent: 'center', padding: '14px', fontSize: '16px', marginTop: '8px' }}>
               <PlusCircle size={18} />
-              Publish Event & Deploy Smart Contract Metadata
+              {isCreatingEvent ? 'Publishing Event...' : 'Publish Event & Deploy Smart Contract Metadata'}
             </button>
           </div>
 

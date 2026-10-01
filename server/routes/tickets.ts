@@ -9,11 +9,29 @@ import {
 
 const router = Router();
 const SOROBAN_CONTRACT_ID = process.env.SOROBAN_CONTRACT_ID || 'CDD3VJENDGV6LLOY2OCYQSRD5CQKYAPL4I3MNWFFQBXJ6P6KOJHQK47J';
+const amountPatterns = {
+  stripe: /^\$\d{1,9}(?:\.\d{1,2})? USD$/,
+  flutterwave: /^₦(?:\d+|\d{1,3}(?:,\d{3})+) NGN$/,
+  stellar: /^\d{1,12}(?:\.\d{1,7})? XLM$/,
+};
 
 // 1. Purchase Ticket Endpoint
 router.post('/purchase', async (req, res) => {
   try {
     const { eventId, eventTitle, eventDate, eventVenue, tierName, buyerName, buyerEmail, paymentProvider, amountPaid } = req.body;
+
+    if (typeof buyerName !== 'string' || !buyerName.trim() || buyerName.trim().length > 100) {
+      return res.status(400).json({ error: 'A name between 1 and 100 characters is required.' });
+    }
+    if (typeof buyerEmail !== 'string' || buyerEmail.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(buyerEmail.trim())) {
+      return res.status(400).json({ error: 'A valid email address is required.' });
+    }
+    const amountPattern = typeof paymentProvider === 'string'
+      ? amountPatterns[paymentProvider as keyof typeof amountPatterns]
+      : undefined;
+    if (!amountPattern || typeof amountPaid !== 'string' || !amountPattern.test(amountPaid)) {
+      return res.status(400).json({ error: 'A valid payment provider and matching amount are required.' });
+    }
 
     const id = `EVTLNK-${Math.floor(100000 + Math.random() * 900000)}`;
     const ticketHash = `EVTHASH-${Array.from({ length: 32 }, () => Math.floor(Math.random() * 16).toString(16).toUpperCase()).join('')}`;
@@ -28,10 +46,10 @@ router.post('/purchase', async (req, res) => {
       eventDate: eventDate || 'October 20-22, 2026',
       eventVenue: eventVenue || 'Lagos Convention Center',
       tierName: tierName || 'General Pass',
-      buyerName: buyerName || 'Valued Attendee',
-      buyerEmail: buyerEmail || 'attendee@drips.org',
-      paymentProvider: paymentProvider || 'stripe',
-      amountPaid: amountPaid || '$25 USD',
+      buyerName: buyerName.trim(),
+      buyerEmail: buyerEmail.trim(),
+      paymentProvider,
+      amountPaid,
       custodialPublicKey,
       currentOwnerAddress: custodialPublicKey,
       status: 'claimable',

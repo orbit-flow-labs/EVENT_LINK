@@ -57,6 +57,17 @@ app.get('/api/health', (_req, res) => {
 
 // Start Server & Connect DB
 async function bootstrap() {
+  if (process.env.NODE_ENV === 'production') {
+    const requiredSecrets = ['JWT_SECRET', 'STRIPE_WEBHOOK_SECRET', 'FLUTTERWAVE_SECRET_HASH'];
+    const missingSecrets = requiredSecrets.filter((name) => !process.env[name]?.trim());
+    if (missingSecrets.length > 0) {
+      throw new Error(`Missing required production environment variables: ${missingSecrets.join(', ')}`);
+    }
+    if (process.env.JWT_SECRET!.length < 32) {
+      throw new Error('JWT_SECRET must be at least 32 characters in production.');
+    }
+  }
+
   await connectDatabase();
   app.listen(PORT, () => {
     console.log(`⚡ EventLink Node.js Backend API running on http://localhost:${PORT}`);

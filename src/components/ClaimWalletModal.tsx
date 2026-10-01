@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { IssuedTicket } from '../types';
 import { claimTicketToWallet } from '../services/stellar';
 import { triggerProgressEmail } from '../services/emailProgress';
+import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 import {
   connectFreighterWallet,
   connectAlbedoWallet,
@@ -25,6 +26,7 @@ export const ClaimWalletModal: React.FC<ClaimWalletModalProps> = ({
   onClose,
   onClaimSuccess,
 }) => {
+  const dialogRef = useAccessibleDialog<HTMLDivElement>(onClose);
   const [claimStep, setClaimStep] = useState<number>(1);
   const [claimInputCode, setClaimInputCode] = useState<string>(ticket?.claimCode || '');
   const [selectedProvider, setSelectedProvider] = useState<WalletProviderType>('freighter');
@@ -140,9 +142,14 @@ export const ClaimWalletModal: React.FC<ClaimWalletModalProps> = ({
       }}
     >
       <motion.div
+        ref={dialogRef}
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         className="glass-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Claim ticket to wallet"
+        tabIndex={-1}
         style={{
           width: '100%',
           maxWidth: '540px',

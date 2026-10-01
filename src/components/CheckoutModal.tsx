@@ -3,6 +3,7 @@ import type { EventItem, TicketTier, PaymentProvider, PaymentFormState, IssuedTi
 import { processPaymentAndMintTicket } from '../services/fiatPayment';
 import { getStoredUserAccount } from '../services/storage';
 import { triggerProgressEmail } from '../services/emailProgress';
+import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 import { FlutterwaveModalOverlay } from './FlutterwaveModalOverlay';
 import { X, CreditCard, Loader2, Lock, Smartphone, Globe, Zap } from 'lucide-react';
 
@@ -23,8 +24,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   onClose,
   onSuccess,
 }) => {
-  if (!event || !tier) return null;
-
+  const dialogRef = useAccessibleDialog<HTMLDivElement>(onClose, Boolean(event && tier));
   const storedUser = propUserAccount || getStoredUserAccount();
 
   const [provider, setProvider] = useState<PaymentProvider>(
@@ -36,9 +36,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     email: storedUser?.email || '',
     fullName: storedUser?.fullName || '',
     phone: '+234 812 345 6789',
-    cardNumber: '4242 •••• •••• 4242',
-    cardExpiry: '12/28',
-    cardCvc: '888',
     country: 'Nigeria',
     freighterAddress: '',
   });
@@ -58,6 +55,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [stepText, setStepText] = useState<string>('');
   const [showFlwOverlay, setShowFlwOverlay] = useState<boolean>(false);
 
+  if (!event || !tier) return null;
+
   const getAmountText = () => {
     if (provider === 'stripe') return `$${tier.priceUSD.toFixed(2)} USD`;
     if (provider === 'flutterwave') return `₦${tier.priceNGN.toLocaleString()} NGN`;
@@ -76,7 +75,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       await new Promise((r) => setTimeout(r, 800));
 
       setStepText('Minting smart ticket asset on Soroban Testnet...');
-      const result = await processPaymentAndMintTicket(event, tier, { ...form, provider: selectedProvider });
+      const result = await processPaymentAndMintTicket(event, tier, {
+        provider: selectedProvider,
+        email: form.email.trim(),
+        fullName: form.fullName.trim(),
+        freighterAddress: form.freighterAddress?.trim(),
+      });
 
       setStepText('Sending purchase confirmation email...');
       await triggerProgressEmail({
@@ -129,7 +133,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       }}
     >
       <div
-        className="glass-panel"
+        ref={dialogRef}
+        className="glass-panel checkout-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Checkout ticket pass"
+        tabIndex={-1}
         style={{
           width: '100%',
           maxWidth: '560px',
@@ -176,7 +185,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             Choose Payment Method (No Wallet Required for Fiat)
           </label>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+          <div className="checkout-payment-options" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
             <button
               type="button"
               onClick={() => setProvider('stripe')}
@@ -252,10 +261,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         <form onSubmit={handleCheckoutSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           
           <div>
-            <label style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Full Name</label>
+            <label htmlFor="checkout-full-name" style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Full Name</label>
             <input
+              id="checkout-full-name"
               type="text"
               required
+              maxLength={100}
+              autoComplete="name"
               value={form.fullName}
               onChange={(e) => setForm({ ...form, fullName: e.target.value })}
               style={{
@@ -271,10 +283,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           </div>
 
           <div>
-            <label style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Email Address (Ticket & Claim Link sent here)</label>
+            <label htmlFor="checkout-email" style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Email Address (Ticket & Claim Link sent here)</label>
             <input
+              id="checkout-email"
               type="email"
               required
+              maxLength={254}
+              autoComplete="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               style={{
@@ -294,23 +309,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             <div style={{ background: 'rgba(255, 255, 255, 0.02)', padding: '14px', borderRadius: '12px', border: '1px solid var(--border-glass)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#00f2fe', marginBottom: '10px', fontWeight: 600 }}>
                 <Lock size={14} />
-                Stripe 256-bit Encrypted Card Payment
-              </div>
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <input
-                  type="text"
-                  placeholder="Card Number"
-                  value={form.cardNumber}
-                  onChange={(e) => setForm({ ...form, cardNumber: e.target.value })}
-                  style={{ flexGrow: 1, padding: '8px 12px', borderRadius: '8px', background: 'rgba(7, 10, 20, 0.8)', border: '1px solid var(--border-glass)', color: '#fff', fontSize: '13px' }}
-                />
-                <input
-                  type="text"
-                  placeholder="MM/YY"
-                  value={form.cardExpiry}
-                  onChange={(e) => setForm({ ...form, cardExpiry: e.target.value })}
-                  style={{ width: '80px', padding: '8px 12px', borderRadius: '8px', background: 'rgba(7, 10, 20, 0.8)', border: '1px solid var(--border-glass)', color: '#fff', fontSize: '13px' }}
-                />
+                Card details are not collected by this demo checkout.
               </div>
             </div>
           )}

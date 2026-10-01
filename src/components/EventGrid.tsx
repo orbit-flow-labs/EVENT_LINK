@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { EventItem } from '../types';
 import { Calendar, MapPin, Tag, ArrowRight, Shield, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { EventImage } from './EventImage';
 
 interface EventGridProps {
   events: EventItem[];
@@ -151,10 +152,10 @@ export const EventGrid: React.FC<EventGridProps> = ({ events, currency, onSelect
           >
             {/* Event Image */}
             <div style={{ position: 'relative', height: '190px', width: '100%', overflow: 'hidden' }}>
-              <img
+              <EventImage
                 src={evt.imageUrl}
                 alt={evt.title}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                style={{ width: '100%', height: '100%' }}
               />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 50%, rgba(12, 18, 34, 0.98) 100%)' }} />
 

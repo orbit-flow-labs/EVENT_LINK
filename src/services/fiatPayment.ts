@@ -14,7 +14,7 @@ export interface CheckoutResult {
 export async function processPaymentAndMintTicket(
   event: EventItem,
   tier: TicketTier,
-  paymentDetails: PaymentFormState
+  paymentDetails: Pick<PaymentFormState, 'provider' | 'email' | 'fullName' | 'freighterAddress'>
 ): Promise<CheckoutResult> {
   // Simulate network delay for fiat provider API (Stripe or Flutterwave)
   await new Promise((resolve) => setTimeout(resolve, 1800));
