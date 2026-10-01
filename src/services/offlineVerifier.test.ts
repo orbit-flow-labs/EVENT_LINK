@@ -30,4 +30,14 @@ describe('offline ticket verification', () => {
     expect(result.isValid).toBe(false);
     expect(result.status).toBe('used');
   });
+
+  it('rejects tickets already marked used in the local roster', () => {
+    const usedTicket = { ...ticket, status: 'used' } as IssuedTicket;
+
+    const result = verifyOfflineTicket(usedTicket.ticketHash, [usedTicket]);
+
+    expect(result.isValid).toBe(false);
+    expect(result.status).toBe('used');
+    expect(getOfflineCheckinCache()).toEqual([]);
+  });
 });
