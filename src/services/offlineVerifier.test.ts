@@ -48,4 +48,13 @@ describe('offline ticket verification', () => {
     expect(result.status).toBe('invalid');
     expect(getOfflineCheckinCache()).toEqual([]);
   });
+
+  it('recovers from malformed cached JSON when recording a valid scan', () => {
+    localStorage.setItem('eventlink_offline_checkins_v1', '{not-json');
+
+    const result = verifyOfflineTicket(ticket.ticketHash, [ticket]);
+
+    expect(result.isValid).toBe(true);
+    expect(getOfflineCheckinCache()).toEqual([ticket.id]);
+  });
 });
