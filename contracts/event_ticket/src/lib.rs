@@ -218,6 +218,9 @@ impl EventTicketContract {
         if ticket.status != TicketStatus::Valid {
             panic!("Only valid tickets can be listed for resale");
         }
+        if ticket.is_listed_resale {
+            panic!("Ticket is already listed for resale");
+        }
 
         if ticket.price <= 0 || resale_price <= 0 {
             panic!("Ticket and resale prices must be greater than zero");
@@ -251,6 +254,9 @@ impl EventTicketContract {
 
         if !ticket.is_listed_resale {
             panic!("Ticket is not listed for resale");
+        }
+        if ticket.current_owner == buyer {
+            panic!("Ticket owner cannot purchase their own listing");
         }
 
         let meta: EventMeta = env.storage().instance().get(&DataKey::EventInfo).unwrap();
