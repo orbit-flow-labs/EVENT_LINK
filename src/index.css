@@ -61,6 +61,33 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   box-shadow: 0 20px 45px -5px rgba(0, 242, 254, 0.25);
 }
 
+.event-image-frame {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #17252d, #243238);
+}
+
+.event-image-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #d1e0e0;
+  background: linear-gradient(135deg, #17252d, #243238);
+  font-size: 13px;
+}
+
+.event-image-media {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 /* Holographic Metallic Card Effect */
 .holographic-card {
   position: relative;

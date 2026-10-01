@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import type { EventItem, TicketTier } from '../types';
 import { X, Calendar, MapPin, CheckCircle2, ShieldCheck, CreditCard } from 'lucide-react';
+import { EventImage } from './EventImage';
 
 interface EventDetailModalProps {
   event: EventItem | null;
@@ -82,10 +83,10 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
 
         {/* Event Header Hero */}
         <div style={{ position: 'relative', height: '240px', width: '100%' }}>
-          <img
+          <EventImage
             src={event.imageUrl}
             alt={event.title}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            style={{ width: '100%', height: '100%' }}
           />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 20%, rgba(15, 23, 42, 1) 100%)' }} />
 
