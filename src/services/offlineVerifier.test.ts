@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import type { IssuedTicket } from '../types';
-import { getOfflineCheckinCache, verifyOfflineTicket } from './offlineVerifier';
+import { clearOfflineCheckinCache, getOfflineCheckinCache, verifyOfflineTicket } from './offlineVerifier';
 
 const ticket = {
   id: 'TCK-100001',
@@ -56,5 +56,13 @@ describe('offline ticket verification', () => {
 
     expect(result.isValid).toBe(true);
     expect(getOfflineCheckinCache()).toEqual([ticket.id]);
+  });
+
+  it('clears queued check-ins after synchronization', () => {
+    verifyOfflineTicket(ticket.ticketHash, [ticket]);
+
+    clearOfflineCheckinCache();
+
+    expect(getOfflineCheckinCache()).toEqual([]);
   });
 });
