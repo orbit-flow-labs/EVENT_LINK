@@ -96,6 +96,9 @@ impl EventTicketContract {
         claim_secret_hash: String,
     ) -> u64 {
         let mut meta: EventMeta = env.storage().instance().get(&DataKey::EventInfo).unwrap();
+        if price <= 0 {
+            panic!("Ticket price must be greater than zero");
+        }
         if meta.minted_count >= meta.total_supply {
             panic!("Event sold out");
         }
@@ -216,8 +219,16 @@ impl EventTicketContract {
             panic!("Only valid tickets can be listed for resale");
         }
 
-        // Anti-scalping cap: Max 150% of original price
-        let max_resale = ticket.price * 150 / 100;
+        if ticket.price <= 0 || resale_price <= 0 {
+            panic!("Ticket and resale prices must be greater than zero");
+        }
+
+        // Anti-scalping cap: Max 150% of original price.
+        let max_resale = ticket
+            .price
+            .checked_mul(150)
+            .map(|price| price / 100)
+            .unwrap_or(i128::MAX);
         if resale_price > max_resale {
             panic!("Resale price exceeds anti-scalping price cap (150%)");
         }
