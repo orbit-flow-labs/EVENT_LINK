@@ -11,7 +11,7 @@
 
 ## 📌 Executive Summary
 
-**EventLink** is the EventLink frontend. The current checkout simulates Stripe and Flutterwave payment references in the browser; it does not charge a card or mobile-money account. The API is maintained separately in [EVENT_LINK_BACKEND](https://github.com/orbit-flow-labs/EVENT_LINK_BACKEND), and Soroban source is in [EVENT_LINK_CONTRACT](https://github.com/orbit-flow-labs/EVENT_LINK_CONTRACT).
+**EventLink** is the EventLink frontend. The current checkout simulates Stripe and Flutterwave payment references in the browser; it does not charge a card or mobile-money account. The API is maintained separately in [EVENT_LINK_BACKEND-](https://github.com/orbit-flow-labs/EVENT_LINK_BACKEND-), and Soroban source is in [EVENT_LINK_CONTRACT](https://github.com/orbit-flow-labs/EVENT_LINK_CONTRACT).
 
 Upon purchase, the system automatically mints a non-custodial digital ticket asset on the Stellar ledger, generates an offline-resilient QR code, and establishes a claimable balance. Attendees can optionally connect a **Freighter**, **Albedo**, **xBull**, or **Lobstr** wallet at any time to claim full self-custody over their on-chain ticket passes and post-event Proof-of-Attendance NFTs (POAPs).
 
@@ -144,7 +144,7 @@ EventLink solves these friction points through a progressive onboarding architec
 
 ## 🔑 Environment Variables
 
-Copy `.env.example` to `.env`. `VITE_API_BASE_URL` is a frontend build-time setting; use the local backend URL for development or the deployed [EVENT_LINK_BACKEND](https://github.com/orbit-flow-labs/EVENT_LINK_BACKEND) URL in production. Backend secrets and database settings belong in the backend repository, not this frontend project.
+Copy `.env.example` to `.env`. `VITE_API_BASE_URL` is a frontend build-time setting; use the local backend URL for development or the deployed [EVENT_LINK_BACKEND-](https://github.com/orbit-flow-labs/EVENT_LINK_BACKEND-) URL in production. Backend secrets and database settings belong in the backend repository, not this frontend project.
 
 ---
 
@@ -176,14 +176,14 @@ cp .env.example .env
 npm run dev
 ```
 
-Visit `http://localhost:5173` in your browser. API-backed features require the separate backend running at `http://localhost:3001`.
+Visit `http://localhost:5173` in your browser. API-backed features require the separate [backend](https://github.com/orbit-flow-labs/EVENT_LINK_BACKEND-) running at `http://localhost:3001`.
 
 ---
 
 ## 🌐 Deployment Guidelines
 
 - **Frontend:** Deployed via [Vercel](https://vercel.com) with Vite build environment.
-- **Backend:** Maintained in [EVENT_LINK_BACKEND](https://github.com/orbit-flow-labs/EVENT_LINK_BACKEND); deploy via [Render](https://render.com) or [Railway](https://railway.app).
+- **Backend:** Maintained in [EVENT_LINK_BACKEND-](https://github.com/orbit-flow-labs/EVENT_LINK_BACKEND-); deploy via [Render](https://render.com) or [Railway](https://railway.app).
 - **Soroban contract:** Maintained in [EVENT_LINK_CONTRACT](https://github.com/orbit-flow-labs/EVENT_LINK_CONTRACT).
 - **Database:** Hosted on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
 - **SSL / Domain:** Production requires HTTPS for WebCrypto APIs, payment webhooks, and Freighter wallet interactions.

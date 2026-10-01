@@ -52,14 +52,14 @@ There are many ways to contribute to EventLink:
    ```bash
    cp .env.example .env
    ```
-   Set `VITE_API_BASE_URL` if the backend is not running at its local default. Backend settings are documented in [EVENT_LINK_BACKEND](https://github.com/orbit-flow-labs/EVENT_LINK_BACKEND).
+   Set `VITE_API_BASE_URL` if the backend is not running at its local default. Backend settings are documented in [EVENT_LINK_BACKEND-](https://github.com/orbit-flow-labs/EVENT_LINK_BACKEND-).
 
 4. **Run the Frontend:**
    ```bash
    npm run dev
    ```
 
-The backend and Soroban contract are maintained separately in [EVENT_LINK_BACKEND](https://github.com/orbit-flow-labs/EVENT_LINK_BACKEND) and [EVENT_LINK_CONTRACT](https://github.com/orbit-flow-labs/EVENT_LINK_CONTRACT).
+The backend and Soroban contract are maintained separately in [EVENT_LINK_BACKEND-](https://github.com/orbit-flow-labs/EVENT_LINK_BACKEND-) and [EVENT_LINK_CONTRACT](https://github.com/orbit-flow-labs/EVENT_LINK_CONTRACT).
 
 ---
 
@@ -96,7 +96,7 @@ To maintain high code quality and security, please follow this PR workflow:
 
 EventLink is designed to be extensible for event production companies, ticketing agencies, and Web3 protocols:
 
-- **Custom Gateway Integration:** Extend backend routes in [EVENT_LINK_BACKEND](https://github.com/orbit-flow-labs/EVENT_LINK_BACKEND) to add regional payment provider support (e.g., Paystack, Razorpay).
+- **Custom Gateway Integration:** Extend backend routes in [EVENT_LINK_BACKEND-](https://github.com/orbit-flow-labs/EVENT_LINK_BACKEND-) to add regional payment provider support (e.g., Paystack, Razorpay).
 - **Custom Soroban Contracts:** Modify [EVENT_LINK_CONTRACT](https://github.com/orbit-flow-labs/EVENT_LINK_CONTRACT) to support soulbound passes, dynamic ticket tiers, or specialized royalty distribution.
 - **Enterprise Inquiries:** Reach out via GitHub Discussions or open an issue to explore custom enterprise deployments.
 

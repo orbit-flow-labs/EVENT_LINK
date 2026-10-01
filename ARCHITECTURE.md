@@ -89,7 +89,7 @@ sequenceDiagram
 
 ### Backend Ticket Schema
 
-See the `server/models/Ticket.ts` schema in [EVENT_LINK_BACKEND](https://github.com/orbit-flow-labs/EVENT_LINK_BACKEND).
+See the ticket schema in [EVENT_LINK_BACKEND-](https://github.com/orbit-flow-labs/EVENT_LINK_BACKEND-).
 
 ```typescript
 interface ITicket {
