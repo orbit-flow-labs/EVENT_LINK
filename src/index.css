@@ -227,3 +227,38 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--cyan-primary);
 }
+
+:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --text-muted: #cbd5e1;
+    --border-glass: rgba(255, 255, 255, 0.45);
+    --border-neon-cyan: rgba(0, 242, 254, 0.85);
+  }
+
+  .gradient-text-cyan,
+  .gradient-text-purple,
+  .gradient-text-gold {
+    background: none;
+    -webkit-text-fill-color: currentColor;
+  }
+
+  .gradient-text-cyan { color: #a5f3fc; }
+  .gradient-text-purple { color: #f5d0fe; }
+  .gradient-text-gold { color: #fde68a; }
+}

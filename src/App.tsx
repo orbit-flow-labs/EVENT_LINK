@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { MotionConfig } from 'framer-motion';
 import { Navbar } from './components/Navbar';
 import { EventGrid } from './components/EventGrid';
 import { EventDetailModal } from './components/EventDetailModal';
@@ -162,6 +163,7 @@ export function App() {
   };
 
   return (
+    <MotionConfig reducedMotion="user">
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       
       {/* Top Navbar */}
@@ -316,6 +318,7 @@ export function App() {
       </footer>
 
     </div>
+    </MotionConfig>
   );
 }
 
