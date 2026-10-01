@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
 import type { IssuedTicket } from '../types';
 import { TicketTimeline } from './TicketTimeline';
+import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 import { STELLAR_EXPERT_TESTNET_URL } from '../services/stellar';
 import { X, ExternalLink, ShieldCheck, Wallet, RefreshCw, CheckCircle2, Copy, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -20,6 +21,7 @@ export const TicketPassModal: React.FC<TicketPassModalProps> = ({
   onToggleResale,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const dialogRef = useAccessibleDialog<HTMLDivElement>(onClose, Boolean(ticket));
 
   useEffect(() => {
     if (ticket && canvasRef.current) {
@@ -92,10 +94,15 @@ export const TicketPassModal: React.FC<TicketPassModalProps> = ({
       }}
     >
       <motion.div
+        ref={dialogRef}
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9 }}
         className="glass-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Ticket pass for ${ticket.eventTitle}`}
+        tabIndex={-1}
         style={{
           width: '100%',
           maxWidth: '720px',

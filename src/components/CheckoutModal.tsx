@@ -3,6 +3,7 @@ import type { EventItem, TicketTier, PaymentProvider, PaymentFormState, IssuedTi
 import { processPaymentAndMintTicket } from '../services/fiatPayment';
 import { getStoredUserAccount } from '../services/storage';
 import { triggerProgressEmail } from '../services/emailProgress';
+import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 import { FlutterwaveModalOverlay } from './FlutterwaveModalOverlay';
 import { X, CreditCard, Loader2, Lock, Smartphone, Globe, Zap } from 'lucide-react';
 
@@ -23,6 +24,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   onClose,
   onSuccess,
 }) => {
+  const dialogRef = useAccessibleDialog<HTMLDivElement>(onClose, Boolean(event && tier));
   const storedUser = propUserAccount || getStoredUserAccount();
 
   const [provider, setProvider] = useState<PaymentProvider>(
@@ -129,7 +131,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       }}
     >
       <div
+        ref={dialogRef}
         className="glass-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Checkout ticket pass"
+        tabIndex={-1}
         style={{
           width: '100%',
           maxWidth: '560px',

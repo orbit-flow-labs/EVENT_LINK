@@ -5,6 +5,7 @@ import { triggerProgressEmail } from '../services/emailProgress';
 import { API_BASE_URL } from '../services/apiConfig';
 import { X, User, Mail, Lock, ShieldCheck, Loader2, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 
 interface UserAuthModalProps {
   initialMode?: 'login' | 'register';
@@ -13,6 +14,7 @@ interface UserAuthModalProps {
 }
 
 export const UserAuthModal: React.FC<UserAuthModalProps> = ({ initialMode = 'login', onClose, onAuthSuccess }) => {
+  const dialogRef = useAccessibleDialog<HTMLDivElement>(onClose);
   const [isLogin, setIsLogin] = useState<boolean>(initialMode === 'login');
   const [fullName, setFullName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -103,9 +105,14 @@ export const UserAuthModal: React.FC<UserAuthModalProps> = ({ initialMode = 'log
       }}
     >
       <motion.div
+        ref={dialogRef}
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         className="glass-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-label={isLogin ? 'Sign in to EventLink' : 'Create EventLink account'}
+        tabIndex={-1}
         style={{
           width: '100%',
           maxWidth: '460px',

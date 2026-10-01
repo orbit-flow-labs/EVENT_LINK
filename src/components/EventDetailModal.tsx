@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import type { EventItem, TicketTier } from '../types';
 import { X, Calendar, MapPin, CheckCircle2, ShieldCheck, CreditCard } from 'lucide-react';
 import { EventImage } from './EventImage';
+import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 
 interface EventDetailModalProps {
   event: EventItem | null;
@@ -16,6 +17,7 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
   onClose,
   onProceedToCheckout,
 }) => {
+  const dialogRef = useAccessibleDialog<HTMLDivElement>(onClose, Boolean(event));
   const [selectedTierId, setSelectedTierId] = useState<string>(event?.tiers[0]?.id || '');
 
   useEffect(() => {
@@ -47,7 +49,12 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
       }}
     >
       <div
+        ref={dialogRef}
         className="glass-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Event details for ${event.title}`}
+        tabIndex={-1}
         style={{
           width: '100%',
           maxWidth: '850px',
