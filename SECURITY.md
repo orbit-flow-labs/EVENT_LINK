@@ -38,3 +38,4 @@ If you discover a security vulnerability within EventLink, please report it resp
 
 - **Smart Contract Safety:** Soroban contracts are compiled using standard Rust toolchains and enforce strict authorization checks (`address.require_auth()`).
 - **Dependencies:** All npm dependencies are audited regularly using `npm audit` and locked via `package-lock.json`.
+- **Repository Scope:** This repository contains the frontend. Report backend or contract vulnerabilities in [EVENT_LINK_BACKEND](https://github.com/orbit-flow-labs/EVENT_LINK_BACKEND) or [EVENT_LINK_CONTRACT](https://github.com/orbit-flow-labs/EVENT_LINK_CONTRACT), respectively.
