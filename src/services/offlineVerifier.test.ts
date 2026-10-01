@@ -21,4 +21,13 @@ describe('offline ticket verification', () => {
     expect(result.ticket?.id).toBe(ticket.id);
     expect(getOfflineCheckinCache()).toEqual([ticket.id]);
   });
+
+  it('rejects a repeated offline scan from the local check-in queue', () => {
+    verifyOfflineTicket(ticket.ticketHash, [ticket]);
+
+    const result = verifyOfflineTicket(ticket.ticketHash, [ticket]);
+
+    expect(result.isValid).toBe(false);
+    expect(result.status).toBe('used');
+  });
 });
