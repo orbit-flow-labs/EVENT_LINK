@@ -11,7 +11,7 @@
 
 ## 📌 Executive Summary
 
-**EventLink** is a hybrid Web2 + Web3 event ticketing infrastructure engineered to eliminate ticket fraud, secondary market scalping, and Web3 onboarding friction. By combining mainstream payment processing (**Stripe** and **Flutterwave**) with **Stellar Soroban smart contracts**, EventLink allows everyday attendees to purchase event tickets using credit cards or mobile money without needing prior cryptocurrency knowledge.
+**EventLink** is a hybrid Web2 + Web3 event ticketing prototype. The current checkout simulates Stripe and Flutterwave payment references in the browser; it does not charge a card or mobile-money account. Backend webhook endpoints are present, but a verified payment-provider integration is not yet wired into checkout.
 
 Upon purchase, the system automatically mints a non-custodial digital ticket asset on the Stellar ledger, generates an offline-resilient QR code, and establishes a claimable balance. Attendees can optionally connect a **Freighter**, **Albedo**, **xBull**, or **Lobstr** wallet at any time to claim full self-custody over their on-chain ticket passes and post-event Proof-of-Attendance NFTs (POAPs).
 
@@ -93,7 +93,7 @@ EventLink solves these friction points through a progressive onboarding architec
 
 ## 🏗️ System Architecture
 
-- **Frontend:** React 18, TypeScript, Vite, Glassmorphism CSS, `@stellar/freighter-api`, Lucide Icons.
+- **Frontend:** React 19, TypeScript, Vite, Glassmorphism CSS, `@stellar/freighter-api`, Lucide Icons.
 - **Backend:** Node.js, Express, TypeScript, Mongoose ODM, JWT Authentication.
 - **Database:** MongoDB Atlas (Cluster `event-link.dmfso1e.mongodb.net`).
 - **Blockchain Layer:** Stellar Testnet, Soroban Rust Smart Contracts, `@stellar/stellar-sdk`.
@@ -107,7 +107,7 @@ EventLink solves these friction points through a progressive onboarding architec
 | :--- | :--- |
 | **Smart Contracts** | Rust, Soroban SDK, Stellar CLI |
 | **Blockchain Client** | `@stellar/stellar-sdk`, Soroban RPC |
-| **Frontend** | React 18, Vite, TypeScript, Framer Motion |
+| **Frontend** | React 19, Vite, TypeScript, Framer Motion |
 | **Styling** | Vanilla CSS (Dark Neon Glassmorphism) |
 | **Backend API** | Node.js, Express, TypeScript, tsx |
 | **Database** | MongoDB Atlas, Mongoose |
@@ -144,30 +144,7 @@ EventLink solves these friction points through a progressive onboarding architec
 
 ## 🔑 Environment Variables
 
-### `.env` Structure
-
-```env
-# Server Config
-PORT=3001
-NODE_ENV=development
-JWT_SECRET=your_jwt_secret_key_min_32_chars
-
-# Database
-MONGODB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/eventlink
-
-# Payments
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-FLUTTERWAVE_PUBLIC_KEY=FLWPUBK_TEST-...
-FLUTTERWAVE_SECRET_KEY=FLWSECK_TEST-...
-FLUTTERWAVE_SECRET_HASH=flw_sec_hash_...
-
-# Stellar & Soroban
-STELLAR_NETWORK=TESTNET
-STELLAR_HORIZON_URL=https://horizon-testnet.stellar.org
-SOROBAN_RPC_URL=https://soroban-testnet.stellar.org
-SOROBAN_CONTRACT_ID=CDD3VJENDGV6LLOY2OCYQSRD5CQKYAPL4I3MNWFFQBXJ6P6KOJHQK47J
-```
+Copy `.env.example` to `.env` for the server and local Vite API URL settings. Production startup requires a 32-character `JWT_SECRET`, `STRIPE_WEBHOOK_SECRET`, and `FLUTTERWAVE_SECRET_HASH`; `MONGODB_URI` and SMTP credentials are optional for local development. `VITE_API_BASE_URL` is a frontend build-time setting and must point to the deployed API in production. Checkout currently uses simulated provider references, so the payment keys do not enable live payments.
 
 ---
 
@@ -176,8 +153,8 @@ SOROBAN_CONTRACT_ID=CDD3VJENDGV6LLOY2OCYQSRD5CQKYAPL4I3MNWFFQBXJ6P6KOJHQK47J
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/Japheth-Adamu/event-link.git
-cd event-link
+git clone https://github.com/orbit-flow-labs/EVENT_LINK.git
+cd EVENT_LINK
 ```
 
 ### 2. Install Dependencies
@@ -196,7 +173,7 @@ cp .env.example .env
 ### 4. Start Backend Server
 
 ```bash
-npx tsx server/index.ts
+npm run server
 ```
 
 ### 5. Start Frontend Application
@@ -207,7 +184,7 @@ In a separate terminal:
 npm run dev
 ```
 
-Visit `http://localhost:5179` in your browser.
+Visit `http://localhost:5173` in your browser. The API listens on `http://localhost:3001` by default.
 
 ---
 
