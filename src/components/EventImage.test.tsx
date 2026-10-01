@@ -12,4 +12,14 @@ describe('EventImage', () => {
     expect(markup).toContain('role="img"');
     expect(markup).toContain('Unsafe event: image unavailable');
   });
+
+  it('renders HTTPS event images', () => {
+    const markup = renderToStaticMarkup(
+      <EventImage src="https://images.example.test/event.jpg" alt="Safe event" />,
+    );
+
+    expect(markup).toContain('<img');
+    expect(markup).toContain('src="https://images.example.test/event.jpg"');
+    expect(markup).toContain('alt="Safe event"');
+  });
 });
