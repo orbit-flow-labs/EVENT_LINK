@@ -1,3 +1,5 @@
+import { act } from 'react';
+import { createRoot } from 'react-dom/client';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { EventImage } from './EventImage';
@@ -30,5 +32,27 @@ describe('EventImage', () => {
 
     expect(markup).not.toContain('<img');
     expect(markup).toContain('Insecure event: image unavailable');
+  });
+
+  it('shows the accessible fallback when an image request fails', async () => {
+    const container = document.createElement('div');
+    const root = createRoot(container);
+
+    await act(async () => {
+      root.render(<EventImage src="https://images.example.test/broken.jpg" alt="Broken event" />);
+    });
+
+    const image = container.querySelector('img');
+    expect(image).not.toBeNull();
+
+    await act(async () => {
+      image?.dispatchEvent(new Event('error'));
+    });
+
+    expect(container.querySelector('img')).toBeNull();
+    expect(container.querySelector('[role="img"]')?.getAttribute('aria-label'))
+      .toBe('Broken event: image unavailable');
+
+    await act(async () => root.unmount());
   });
 });
