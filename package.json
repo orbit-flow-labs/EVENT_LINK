@@ -23,7 +23,7 @@
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.28.0",
     "mongoose": "^9.9.1",
-    "nodemailer": "^9.0.3",
+    "nodemailer": "^9.1.1",
     "qrcode": "^1.5.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
