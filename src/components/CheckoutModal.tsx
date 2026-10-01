@@ -36,9 +36,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     email: storedUser?.email || '',
     fullName: storedUser?.fullName || '',
     phone: '+234 812 345 6789',
-    cardNumber: '4242 •••• •••• 4242',
-    cardExpiry: '12/28',
-    cardCvc: '888',
     country: 'Nigeria',
     freighterAddress: '',
   });
@@ -78,7 +75,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       await new Promise((r) => setTimeout(r, 800));
 
       setStepText('Minting smart ticket asset on Soroban Testnet...');
-      const result = await processPaymentAndMintTicket(event, tier, { ...form, provider: selectedProvider });
+      const result = await processPaymentAndMintTicket(event, tier, {
+        provider: selectedProvider,
+        email: form.email.trim(),
+        fullName: form.fullName.trim(),
+        freighterAddress: form.freighterAddress?.trim(),
+      });
 
       setStepText('Sending purchase confirmation email...');
       await triggerProgressEmail({
@@ -259,10 +261,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         <form onSubmit={handleCheckoutSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           
           <div>
-            <label style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Full Name</label>
+            <label htmlFor="checkout-full-name" style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Full Name</label>
             <input
+              id="checkout-full-name"
               type="text"
               required
+              maxLength={100}
+              autoComplete="name"
               value={form.fullName}
               onChange={(e) => setForm({ ...form, fullName: e.target.value })}
               style={{
@@ -278,10 +283,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           </div>
 
           <div>
-            <label style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Email Address (Ticket & Claim Link sent here)</label>
+            <label htmlFor="checkout-email" style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Email Address (Ticket & Claim Link sent here)</label>
             <input
+              id="checkout-email"
               type="email"
               required
+              maxLength={254}
+              autoComplete="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               style={{
@@ -301,23 +309,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             <div style={{ background: 'rgba(255, 255, 255, 0.02)', padding: '14px', borderRadius: '12px', border: '1px solid var(--border-glass)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#00f2fe', marginBottom: '10px', fontWeight: 600 }}>
                 <Lock size={14} />
-                Stripe 256-bit Encrypted Card Payment
-              </div>
-              <div className="checkout-card-inputs" style={{ display: 'flex', gap: '10px' }}>
-                <input
-                  type="text"
-                  placeholder="Card Number"
-                  value={form.cardNumber}
-                  onChange={(e) => setForm({ ...form, cardNumber: e.target.value })}
-                  style={{ flexGrow: 1, padding: '8px 12px', borderRadius: '8px', background: 'rgba(7, 10, 20, 0.8)', border: '1px solid var(--border-glass)', color: '#fff', fontSize: '13px' }}
-                />
-                <input
-                  type="text"
-                  placeholder="MM/YY"
-                  value={form.cardExpiry}
-                  onChange={(e) => setForm({ ...form, cardExpiry: e.target.value })}
-                  style={{ width: '80px', padding: '8px 12px', borderRadius: '8px', background: 'rgba(7, 10, 20, 0.8)', border: '1px solid var(--border-glass)', color: '#fff', fontSize: '13px' }}
-                />
+                Card details are not collected by this demo checkout.
               </div>
             </div>
           )}

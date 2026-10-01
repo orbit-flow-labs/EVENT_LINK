@@ -96,9 +96,6 @@ export interface PaymentFormState {
   email: string;
   fullName: string;
   phone: string;
-  cardNumber: string;
-  cardExpiry: string;
-  cardCvc: string;
   country: string;
   bankName?: string;
   freighterAddress?: string;
