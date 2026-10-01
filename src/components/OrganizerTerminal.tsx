@@ -127,7 +127,7 @@ export const OrganizerTerminal: React.FC<OrganizerTerminalProps> = ({ tickets, o
   const totalCheckedIn = tickets.filter((t) => t.status === 'used' || t.status === 'proof_nft').length;
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '32px 24px' }}>
+    <div className="organizer-terminal" style={{ maxWidth: '1100px', margin: '0 auto', padding: '32px 24px' }}>
       
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '32px' }}>
@@ -136,7 +136,7 @@ export const OrganizerTerminal: React.FC<OrganizerTerminalProps> = ({ tickets, o
             <ShieldCheck size={14} />
             Soroban Gatekeeper QR Terminal
           </div>
-          <h1 className="font-heading" style={{ fontSize: '32px', fontWeight: 900 }}>
+          <h1 className="font-heading scanner-heading" style={{ fontSize: '32px', fontWeight: 900 }}>
             Gatekeeper Scanner & Check-In Verification
           </h1>
           <p style={{ fontSize: '14px', color: 'var(--text-muted)' }}>
@@ -169,7 +169,7 @@ export const OrganizerTerminal: React.FC<OrganizerTerminalProps> = ({ tickets, o
             {isOfflineMode ? 'Offline Fallback Mode' : 'Online Stellar Network'}
           </button>
 
-          <div className="glass-panel" style={{ padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div className="glass-panel scanner-stats" style={{ padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '16px' }}>
             <div>
               <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block' }}>Total Minted</span>
               <strong style={{ fontSize: '18px' }}>{tickets.length}</strong>
@@ -185,7 +185,7 @@ export const OrganizerTerminal: React.FC<OrganizerTerminalProps> = ({ tickets, o
 
       {/* Offline Sync Banner */}
       {offlineCount > 0 && (
-        <div style={{ background: 'rgba(245, 158, 11, 0.12)', border: '1px solid rgba(245, 158, 11, 0.4)', padding: '14px 20px', borderRadius: '16px', marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="scanner-offline-sync" style={{ background: 'rgba(245, 158, 11, 0.12)', border: '1px solid rgba(245, 158, 11, 0.4)', padding: '14px 20px', borderRadius: '16px', marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#f59e0b', fontSize: '13px', fontWeight: 600 }}>
             <WifiOff size={18} />
             <span>{offlineCount} offline check-ins recorded locally. Ready for network sync.</span>
@@ -203,7 +203,7 @@ export const OrganizerTerminal: React.FC<OrganizerTerminalProps> = ({ tickets, o
       )}
 
       {/* Main Terminal Scanner Card */}
-      <div className="glass-panel" style={{ padding: '36px', borderRadius: '24px', marginBottom: '40px', border: '1px solid rgba(0, 242, 254, 0.35)', position: 'relative', overflow: 'hidden' }}>
+      <div className="glass-panel scanner-card" style={{ padding: '36px', borderRadius: '24px', marginBottom: '40px', border: '1px solid rgba(0, 242, 254, 0.35)', position: 'relative', overflow: 'hidden' }}>
         
         <div style={{ maxWidth: '680px', margin: '0 auto', textAlign: 'center' }}>
           
@@ -243,7 +243,7 @@ export const OrganizerTerminal: React.FC<OrganizerTerminalProps> = ({ tickets, o
             ))}
           </div>
 
-          <form onSubmit={handleVerifyScan} style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
+          <form className="scanner-form" onSubmit={handleVerifyScan} style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
             <div style={{ position: 'relative', flexGrow: 1 }}>
               <input
                 type="text"

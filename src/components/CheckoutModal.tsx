@@ -132,7 +132,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     >
       <div
         ref={dialogRef}
-        className="glass-panel"
+        className="glass-panel checkout-dialog"
         role="dialog"
         aria-modal="true"
         aria-label="Checkout ticket pass"
@@ -183,7 +183,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             Choose Payment Method (No Wallet Required for Fiat)
           </label>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+          <div className="checkout-payment-options" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
             <button
               type="button"
               onClick={() => setProvider('stripe')}
@@ -303,7 +303,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 <Lock size={14} />
                 Stripe 256-bit Encrypted Card Payment
               </div>
-              <div style={{ display: 'flex', gap: '10px' }}>
+              <div className="checkout-card-inputs" style={{ display: 'flex', gap: '10px' }}>
                 <input
                   type="text"
                   placeholder="Card Number"
