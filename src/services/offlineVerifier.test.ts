@@ -40,4 +40,12 @@ describe('offline ticket verification', () => {
     expect(result.status).toBe('used');
     expect(getOfflineCheckinCache()).toEqual([]);
   });
+
+  it('rejects unknown tickets without changing the synchronization queue', () => {
+    const result = verifyOfflineTicket('UNKNOWN-TICKET', [ticket]);
+
+    expect(result.isValid).toBe(false);
+    expect(result.status).toBe('invalid');
+    expect(getOfflineCheckinCache()).toEqual([]);
+  });
 });
