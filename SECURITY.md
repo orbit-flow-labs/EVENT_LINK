@@ -24,6 +24,26 @@ Ticket QR codes do not transmit raw ticket IDs or static URLs. Each payload cont
 
 ---
 
+## 📦 Automated Dependency Security & Update Process
+
+To prevent supply chain risks, dependency vulnerabilities, and unreviewed breaking changes, EventLink enforces automated dependency hygiene:
+
+### 1. Automated Dependabot Management
+- Configured in `.github/dependabot.yml` to check for dependency updates weekly on Mondays at 04:00 UTC.
+- **Major Update Restriction**: Major version updates (`version-update:semver-major`) are deliberately ignored by automated PR generation so that potential breaking API changes require manual maintainer review and testing.
+- **Grouped PRs**: Minor and patch updates are grouped into a single unified PR to minimize notification fatigue and facilitate consolidated review.
+
+### 2. Continuous Vulnerability Auditing & Gating
+- **CI Gating**: Every push and pull request runs `npm audit --audit-level=high` in `.github/workflows/ci.yml`. Any high or critical CVE immediately fails the build.
+- **PR Dependency Review Action**: Automated dependency review (`.github/workflows/dependency-audit.yml`) inspects all lockfile changes in incoming pull requests and blocks PRs introducing vulnerable dependencies.
+- **Scheduled Weekly Audits**: Standalone dependency audits run every Monday at 04:00 UTC to catch newly disclosed CVEs in existing code.
+
+### 3. Lockfile Review Guidelines
+- All dependency changes must be accompanied by a clean `package-lock.json` review (`git diff package-lock.json`).
+- Commits must use standard conventional commit prefixes (e.g. `build(deps): ...`).
+
+---
+
 ## 🐛 Reporting a Vulnerability
 
 If you discover a security vulnerability within EventLink, please report it responsibly:

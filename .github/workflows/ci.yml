@@ -15,6 +15,7 @@ jobs:
           node-version: 22.14.0
           cache: npm
       - run: npm ci
+      - run: npm audit --audit-level=high 2>&1 | tee -a ci.log
       - run: npm run lint 2>&1 | tee -a ci.log
       - run: npm test 2>&1 | tee -a ci.log
       - run: npm run build 2>&1 | tee -a ci.log
